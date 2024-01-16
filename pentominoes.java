@@ -112,7 +112,28 @@ Scene.setCamera(Camera);
         Box z3 = CreateSquare(1.5, Color.GREEN) ;
             z1.setRotate(90);
             z1.setTranslateX(0);
-            z1.setTranslateY(-40);s
+            z1.setTranslateY(-40);
+
+
+
+        // penotmino representation for U
+
+        Box u1 = CreateSquare(1.5, Color.YELLOW);
+            u1.setRotate(90);
+            u1.setTranslateX(0.50);
+            u1.setTranslateY(0);
+           
+            
+        Box u2 = CreateSquare(1.5, Color.YELLOW);
+            u2.setTranslateX(0);
+            u2.setTranslateY(1);
+            u2.setTranslateZ(0);
+            
+
+        Box u3 = CreateSquare(1.5, Color.YELLOW);
+            u3.setRotate(90);
+            u3.setTranslateX(0.5);
+            u3.setTranslateY(1);
 
 
 
@@ -122,6 +143,8 @@ Scene.setCamera(Camera);
 //root.getChildren().addAll(x1,x2,x3) ;         //Show X shape
 //root.getChildren().addAll(t1,t2,t3) ;         //Show T shape
 //root.getChildren().addAll(z1,z2,z3) ;         //SHow Z shape
+//root.getChildren().addAll(u1,u2,u3);          //Show U shape
+
 
 
 
