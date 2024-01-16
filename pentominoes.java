@@ -96,11 +96,32 @@ Scene.setCamera(Camera);
             t3.setTranslateZ(0);
             
 
+        
+        // pentomino representation for Z
+
+        Box z1 = CreateSquare(1.5, Color.GREEN) ;
+            z1.setRotate(90);
+            z1.setTranslateX(0);
+            z1.setTranslateY(0);
+        
+        Box z2 = CreateSquare(1.5, Color.GREEN) ;
+            z2.setTranslateX(-0.5);   
+            z2.setTranslateY(1);
+            z2.setTranslateZ(0);
+
+        Box z3 = CreateSquare(1.5, Color.GREEN) ;
+            z1.setRotate(90);
+            z1.setTranslateX(0);
+            z1.setTranslateY(-40);s
+
+
+
+        
             
-    
 //root.getChildren().addAll(i1,i2,i3,i4) ;      //Show I shape
 //root.getChildren().addAll(x1,x2,x3) ;         //Show X shape
 //root.getChildren().addAll(t1,t2,t3) ;         //Show T shape
+//root.getChildren().addAll(z1,z2,z3) ;         //SHow Z shape
 
 
 
