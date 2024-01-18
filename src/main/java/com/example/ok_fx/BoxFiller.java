@@ -32,46 +32,18 @@ public class BoxFiller {
         return field;
     }
 
+    private Blocks[] availableBlocks = new Blocks[]{
+        new Blocks(charToBlockType('A')),
+        new Blocks(charToBlockType('B')),
+        new Blocks(charToBlockType('C'))
+    };
+
     public boolean fillBox() {
-        /* 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Set the interrupted status
-            return false; // Or handle it in another sensible way
-        }*/
-        // If the box is already full, return true
-        if (isBoxFull()) {
-            return true;
-        }
-    
-        // Define all available block types
-        Blocks[] availableBlocks = new Blocks[]{
-            new Blocks(charToBlockType('A')),
-            new Blocks(charToBlockType('B')),
-            new Blocks(charToBlockType('C'))
-        };
-    
         // Iterate over each type of block
         for (Blocks block : availableBlocks) {
             // Try placing the block in every possible position
-            for (int x = 0; x < boxWidth; x++) {
-                for (int y = 0; y < boxHeight; y++) {
-                    for (int z = 0; z < boxDepth; z++) {
-                        if (canPlaceBlock(x, y, z, block)) {
-                            // Place the block
-                            placeBlock(block, x, y, z, true);
-    
-                            // Recursively try to fill the remaining space
-                            if (fillBox()) {
-                                return true;
-                            }
-    
-                            // Backtrack: Remove the block if no solution is found
-                            placeBlock(block, x, y, z, false);
-                        }
-                    }
-                }
+            if (tryPlaceBlock(block)) {
+                return true;
             }
         }
     
@@ -79,7 +51,27 @@ public class BoxFiller {
         return false;
     }
     
+    private boolean tryPlaceBlock(Blocks block) {
+        for (int x = 0; x < boxWidth; x++) {
+            for (int y = 0; y < boxHeight; y++) {
+                for (int z = 0; z < boxDepth; z++) {
+                    if (canPlaceBlock(x, y, z, block)) {
+                        // Place the block
+                        placeBlock(block, x, y, z, true);
     
+                        // Recursively try to fill the remaining space
+                        if (fillBox()) {
+                            return true;
+                        }
+    
+                        // Backtrack: Remove the block if no solution is found
+                        placeBlock(block, x, y, z, false);
+                    }
+                }
+            }
+        }
+        return false;
+    }
     private boolean isBoxFull() {
         for (int x = 0; x < boxWidth; x++) {
             for (int y = 0; y < boxHeight; y++) {
