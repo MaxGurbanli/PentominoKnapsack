@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -15,6 +17,8 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 public class SimpleCubeFrame extends Application {
+    // Initial mouse coordinates
+    private double startX, startY;
 
     public Parent createContent() {
 
@@ -25,7 +29,7 @@ public class SimpleCubeFrame extends Application {
 
         // Create and position camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        camera.getTransforms().addAll (
+        camera.getTransforms().addAll(
                 new Rotate(-15, Rotate.Y_AXIS),
                 new Rotate(-15, Rotate.X_AXIS),
                 new Translate(0, 0, -16));
@@ -36,9 +40,37 @@ public class SimpleCubeFrame extends Application {
         root.getChildren().add(testBox);
 
         // Use a SubScene
-        SubScene subScene = new SubScene(root, 300,300);
+        SubScene subScene = new SubScene(root, 300, 300);
         subScene.setFill(Color.ALICEBLUE);
         subScene.setCamera(camera);
+
+        // Record the initial cursor position
+
+        subScene.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                startX = event.getSceneX();
+                startY = event.getSceneY();
+            }
+        });
+
+        // Calculate the change in cursor position
+        subScene.setOnMouseDragged(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                double deltaX = event.getSceneX() - startX;
+                double deltaY = event.getSceneY() - startY;
+
+                // Rotate
+
+                camera.getTransforms().add(new Rotate(deltaX, Rotate.X_AXIS));
+                camera.getTransforms().add(new Rotate(deltaY, Rotate.Y_AXIS));
+
+                // Record the updated cursor position
+
+                startX = event.getSceneX();
+                startY = event.getSceneY();
+            }
+        });
+
         Group group = new Group();
         group.getChildren().add(subScene);
         return group;
