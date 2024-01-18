@@ -61,8 +61,8 @@ public class SimpleCubeFrame extends Application {
 
                 // Rotate
 
-                camera.getTransforms().add(new Rotate(deltaX, Rotate.X_AXIS));
-                camera.getTransforms().add(new Rotate(deltaY, Rotate.Y_AXIS));
+                camera.getTransforms().add(new Rotate(deltaX, Rotate.Y_AXIS));
+                camera.getTransforms().add(new Rotate(deltaY, Rotate.X_AXIS));
 
                 // Record the updated cursor position
 
@@ -86,7 +86,7 @@ public class SimpleCubeFrame extends Application {
 
     /**
      * Java main for when running without JavaFX launcher
-     */
+    */
     public static void main(String[] args) {
         launch(args);
     }
