@@ -205,7 +205,7 @@ public class GUI extends Application {
                         BlockType blockType = charToBlockType(blockTypeChar);
                         placeVisualBlock(blockGroup, x, y, z, blockType);
                     }
-                    System.out.println(Arrays.deepToString(field));
+                    // System.out.println(Arrays.deepToString(field));
                     
                 }
             }

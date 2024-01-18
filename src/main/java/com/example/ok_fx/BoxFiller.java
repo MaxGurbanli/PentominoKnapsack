@@ -59,6 +59,12 @@ public class BoxFiller {
                         // Place the block
                         placeBlock(block, x, y, z, true);
     
+                        // Prune: If the remaining space cannot be filled by the available blocks, remove the block and continue
+                        if (!canFillRemainingSpace()) {
+                            placeBlock(block, x, y, z, false);
+                            continue;
+                        }
+    
                         // Recursively try to fill the remaining space
                         if (fillBox()) {
                             return true;
@@ -72,6 +78,25 @@ public class BoxFiller {
         }
         return false;
     }
+
+    private boolean canFillRemainingSpace() {
+        int remainingSpace = 0;
+        for (int x = 0; x < boxWidth; x++) {
+            for (int y = 0; y < boxHeight; y++) {
+                for (int z = 0; z < boxDepth; z++) {
+                    if (field[x][y][z] == ' ') {
+                        remainingSpace++;
+                    }
+                }
+            }
+        }
+
+        int smallestBlockVolume = 2;
+    
+        // If the remaining space is not a multiple of the smallest block's volume, return false
+        return remainingSpace % smallestBlockVolume == 0;
+    }
+
     private boolean isBoxFull() {
         for (int x = 0; x < boxWidth; x++) {
             for (int y = 0; y < boxHeight; y++) {
