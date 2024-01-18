@@ -1,13 +1,16 @@
 package com.example.ok_fx;
 
+
 import java.util.Arrays;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
@@ -20,7 +23,7 @@ public class GUI extends Application {
     private static final int DEPTH = 5;
     private static final double BOX_SIZE = 10;
     
-    private char[][][] field = new char[WIDTH][HEIGHT][DEPTH];
+    public BoxFiller boxFiller;
     private Point2D lastMouseCoordinates;
     
     @Override
@@ -32,29 +35,33 @@ public class GUI extends Application {
         
         Scene scene = new Scene(root, 800, 600, true);
         scene.setFill(Color.DARKGRAY);
-        Camera camera = new PerspectiveCamera();
         
+        Camera camera = new PerspectiveCamera();
         camera.getTransforms().addAll (
         new Rotate(-20, Rotate.Y_AXIS),
         new Rotate(-20, Rotate.X_AXIS),
         new Translate(-200, -200, 400));
         scene.setCamera(camera);
-        
         setupZooming(scene, camera);
         double pivotX = 180;
         double pivotY = 40;
         double pivotZ = 0;
-        
         setupRotationWithPivot(scene, camera, pivotX, pivotY, pivotZ);
         addPivotPoint(root, pivotX, pivotY, pivotZ);
         
         create3DGrid(roomGroup);
-        initializeField();
-        placeBlock(blocksGroup, 0, 0, 0, 'A');
-        placeBlock(blocksGroup, 2, 0, 0, 'B');
-        placeBlock(blocksGroup, 4, 0, 0, 'C'); 
         
-        primaryStage.setTitle("3D Grid Example");
+        
+        boxFiller = new BoxFiller(WIDTH, HEIGHT, DEPTH, (x, y, z, blockTypeChar) -> {
+            Platform.runLater(() -> {
+                updateVisualsFromField(blocksGroup);
+            });
+        });
+        
+        
+        startFillingProcess();
+        
+        primaryStage.setTitle("Phase 3 - Knapsack");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -82,8 +89,6 @@ public class GUI extends Application {
         camera.setTranslateY(newPosY);
         camera.setTranslateZ(newPosZ);
     }
-    
-    
     
     private void setupRotationWithPivot(Scene scene, Camera camera, double pivotX, double pivotY, double pivotZ) {
         scene.setOnMousePressed(event -> {
@@ -121,17 +126,6 @@ public class GUI extends Application {
         
         root.getChildren().add(pivotPoint);
     }
-    
-    private void initializeField() {
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int z = 0; z < DEPTH; z++) {
-                    field[x][y][z] = ' '; // Empty space
-                }
-            }
-        }
-    }
-    
     
     private void create3DGrid(Group group) {
         Point3D[] corners = getCornersOfBox();
@@ -197,92 +191,87 @@ public class GUI extends Application {
         };
     }
     
-    private void placeBlockInArray(int x, int y, int z, char blockTypeChar, BlockType blockType) {
-        for (int dx = 0; dx < blockType.width; dx++) {
-            for (int dy = 0; dy < blockType.height; dy++) {
-                for (int dz = 0; dz < blockType.depth; dz++) {
-                    if (x + dx < WIDTH && y + dy < HEIGHT && z + dz < DEPTH) {
-                        field[x + dx][y + dy][z + dz] = blockTypeChar;
-                    }
-                }
-            }
-        }
-    }
-    
     private void updateVisualsFromField(Group blockGroup) {
-        blockGroup.getChildren().clear(); // Clear existing blocks
+        char[][][] field = boxFiller.getField();
+        blockGroup.getChildren().clear(); 
         
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < DEPTH; z++) {
                     char blockTypeChar = field[x][y][z];
-                    if (blockTypeChar != ' ') { // Assuming ' ' represents empty space
+                    if (blockTypeChar == ' '){
+                        removeVisualBlock(blockGroup, x, y, z);
+                    }else{
                         BlockType blockType = charToBlockType(blockTypeChar);
-                        if (blockType != null) {
-                            placeVisualBlock(blockGroup, x, y, z, blockType);
-                        }
+                        placeVisualBlock(blockGroup, x, y, z, blockType);
                     }
+                    System.out.println(Arrays.deepToString(field));
+                    
                 }
             }
         }
+    }
+
+    private void removeVisualBlock(Group blockGroup, int x, int y, int z){
+        Box cell = new Box(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseColor(Color.TRANSPARENT);
+        cell.setMaterial(material);
+        
+        
+        double translateX = x * BOX_SIZE + 5;
+        double translateY = y * BOX_SIZE + 5;
+        double translateZ = z * BOX_SIZE + 5;
+        cell.setTranslateX(translateX);
+        cell.setTranslateY(translateY);
+        cell.setTranslateZ(translateZ);
+        blockGroup.getChildren().add(cell);
     }
     
     private void placeVisualBlock(Group blockGroup, int x, int y, int z, BlockType blockType) {
         Blocks block = new Blocks(blockType);
         
-        double blockWidth = block.getWidth();
-        double blockHeight = block.getHeight();
-        double blockDepth = block.getDepth();
+        Box cell = new Box(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseColor(block.getColor());
+        cell.setMaterial(material);
         
-        double translateX = x * BOX_SIZE + blockWidth / 2;
-        double translateY = y * BOX_SIZE + blockHeight/ 2;
-        double translateZ = z * BOX_SIZE + blockDepth / 2;
-        block.setTranslateX(translateX);
-        block.setTranslateY(translateY);
-        block.setTranslateZ(translateZ);
-        blockGroup.getChildren().add(block);
-    }
-
-    private void placeBlock(Group blockGroup, int x, int y, int z, char blockTypeChar) {
-        BlockType blockType = charToBlockType(blockTypeChar);
-        if (blockType == null || !canPlaceBlock(x, y, z, blockType)) {
-            return; // Block cannot be placed
-        }
         
-        // Update the field array
-        placeBlockInArray(x, y, z, blockTypeChar, blockType);
-        
-        // Update the visuals based on the field array
-        updateVisualsFromField(blockGroup);
+        double translateX = x * BOX_SIZE + 5 ;
+        double translateY = y * BOX_SIZE + 5;
+        double translateZ = z * BOX_SIZE + 5;
+        cell.setTranslateX(translateX);
+        cell.setTranslateY(translateY);
+        cell.setTranslateZ(translateZ);
+        blockGroup.getChildren().add(cell);
     }
-
-    private boolean canPlaceBlock(int x, int y, int z, BlockType blockType) {
-        for (int dx = 0; dx < blockType.width; dx++) {
-            for (int dy = 0; dy < blockType.height; dy++) {
-                for (int dz = 0; dz < blockType.depth; dz++) {
-                    if (x + dx >= WIDTH || y + dy >= HEIGHT || z + dz >= DEPTH || 
-                    field[x + dx][y + dy][z + dz] != ' ') {
-                        return false; // Out of bounds or overlapping
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
+    
     private BlockType charToBlockType(char blockTypeChar) {
         switch (blockTypeChar) {
             case 'A':
-                return BlockType.A;
+            return BlockType.A;
             case 'B':
-                return BlockType.B;
+            return BlockType.B;
             case 'C':
-                return BlockType.C;
+            return BlockType.C;
             default:
-                return null; // Unknown type
+            return null;
+            
         }
     }
+    
+    private void startFillingProcess() {
+        new Thread(() -> {
+            boolean result = boxFiller.fillBox();
+            if (result) {
+                System.out.println("Box successfully filled.");
+            } else {
+                System.out.println("Could not fill the box with the given blocks.");
+            }
+        }).start();
+    }
+    
     public static void main(String[] args) {
-    launch(args);
-}
+        launch(args);
+    }
 }
