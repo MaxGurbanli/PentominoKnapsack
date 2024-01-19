@@ -1,7 +1,6 @@
 package com.example.ok_fx;
 
 
-import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -23,6 +22,7 @@ public class GUI extends Application {
     private static final int DEPTH = 5;
     private static final double BOX_SIZE = 10;
     
+    
     public BoxFiller boxFiller;
     private Point2D lastMouseCoordinates;
     
@@ -38,9 +38,10 @@ public class GUI extends Application {
         
         Camera camera = new PerspectiveCamera();
         camera.getTransforms().addAll (
-        new Rotate(-20, Rotate.Y_AXIS),
-        new Rotate(-20, Rotate.X_AXIS),
-        new Translate(-200, -200, 400));
+            new Rotate(-20, Rotate.Y_AXIS),
+            new Rotate(-20, Rotate.X_AXIS),
+            new Translate(-200, -200, 400));
+            
         scene.setCamera(camera);
         setupZooming(scene, camera);
         double pivotX = 180;
@@ -213,15 +214,15 @@ public class GUI extends Application {
     }
 
     private void removeVisualBlock(Group blockGroup, int x, int y, int z){
-        Box cell = new Box(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+        Box cell = new Box(BOX_SIZE-1, BOX_SIZE-1, BOX_SIZE-1);
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(Color.TRANSPARENT);
         cell.setMaterial(material);
         
         
-        double translateX = x * BOX_SIZE + 5;
-        double translateY = y * BOX_SIZE + 5;
-        double translateZ = z * BOX_SIZE + 5;
+        double translateX = x * BOX_SIZE + BOX_SIZE/2;
+        double translateY = y * BOX_SIZE + BOX_SIZE/2;
+        double translateZ = z * BOX_SIZE + BOX_SIZE/2;
         cell.setTranslateX(translateX);
         cell.setTranslateY(translateY);
         cell.setTranslateZ(translateZ);
@@ -237,9 +238,9 @@ public class GUI extends Application {
         cell.setMaterial(material);
         
         
-        double translateX = x * BOX_SIZE + 5 ;
-        double translateY = y * BOX_SIZE + 5;
-        double translateZ = z * BOX_SIZE + 5;
+        double translateX = x * BOX_SIZE + BOX_SIZE/2;
+        double translateY = y * BOX_SIZE + BOX_SIZE/2;
+        double translateZ = z * BOX_SIZE + BOX_SIZE/2;
         cell.setTranslateX(translateX);
         cell.setTranslateY(translateY);
         cell.setTranslateZ(translateZ);
@@ -249,13 +250,13 @@ public class GUI extends Application {
     private BlockType charToBlockType(char blockTypeChar) {
         switch (blockTypeChar) {
             case 'A':
-            return BlockType.A;
+                return BlockType.A;
             case 'B':
-            return BlockType.B;
+                return BlockType.B;
             case 'C':
-            return BlockType.C;
+                return BlockType.C;
             default:
-            return null;
+                throw new IllegalArgumentException("Unknown block type character: " + blockTypeChar);
             
         }
     }
@@ -270,7 +271,6 @@ public class GUI extends Application {
             }
         }).start();
     }
-    
     public static void main(String[] args) {
         launch(args);
     }

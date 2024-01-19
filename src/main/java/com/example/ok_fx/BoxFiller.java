@@ -1,7 +1,6 @@
 package com.example.ok_fx;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.Arrays;
 
 public class BoxFiller {
     private int boxWidth, boxHeight, boxDepth;
@@ -32,71 +31,78 @@ public class BoxFiller {
         return field;
     }
 
-    private Blocks[] availableBlocks = new Blocks[]{
-        new Blocks(charToBlockType('A')),
-        new Blocks(charToBlockType('B')),
-        new Blocks(charToBlockType('C'))
-    };
-
     public boolean fillBox() {
+
+        System.out.println(Arrays.deepToString(field));
+        
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Set the interrupted status
+            return false; // Or handle it in another sensible way
+        }
+        // If the box is already full, return true
+        if (isBoxFull()) {
+            return true;
+        }
+    
+        // Define all available block types
+        Blocks[] availableBlocks = new Blocks[]{
+            new Blocks(charToBlockType('A')),
+            new Blocks(charToBlockType('B')),
+            new Blocks(charToBlockType('C'))
+        };
+        
         // Iterate over each type of block
         for (Blocks block : availableBlocks) {
             // Try placing the block in every possible position
-            if (tryPlaceBlock(block)) {
-                return true;
-            }
-        }
+            for (int x = 0; x < boxWidth; x++) {
+                for (int y = 0; y < boxHeight; y++) {
+                    for (int z = 0; z < boxDepth; z++) {
+                        if (canPlaceBlock(x, y, z, block)) {
+                            // Place the block
+                            placeBlock(block, x, y, z, true);
     
-        // Return false if no solution is found
-        return false;
-    }
-    
-    private boolean tryPlaceBlock(Blocks block) {
-        for (int x = 0; x < boxWidth; x++) {
-            for (int y = 0; y < boxHeight; y++) {
-                for (int z = 0; z < boxDepth; z++) {
-                    if (canPlaceBlock(x, y, z, block)) {
-                        // Place the block
-                        placeBlock(block, x, y, z, true);
-    
-                        // Prune: If the remaining space cannot be filled by the available blocks, remove the block and continue
-                        if (!canFillRemainingSpace()) {
+                            // Recursively try to fill the remaining space
+                            if (fillBox()) {
+                                return true;
+                            }
+                        
+                            // Backtrack: Remove the block if no solution is found
                             placeBlock(block, x, y, z, false);
-                            continue;
                         }
-    
-                        // Recursively try to fill the remaining space
-                        if (fillBox()) {
-                            return true;
-                        }
-    
-                        // Backtrack: Remove the block if no solution is found
-                        placeBlock(block, x, y, z, false);
                     }
                 }
             }
         }
+        // Return false if no solution is found
         return false;
     }
 
-    private boolean canFillRemainingSpace() {
-        int remainingSpace = 0;
+    private boolean deadSpotDetection() {
         for (int x = 0; x < boxWidth; x++) {
             for (int y = 0; y < boxHeight; y++) {
                 for (int z = 0; z < boxDepth; z++) {
                     if (field[x][y][z] == ' ') {
-                        remainingSpace++;
+                        boolean adjacentFilled = (x+1 < boxWidth && field[x+1][y][z] != ' ') ||
+                                                 (y+1 < boxHeight && field[x][y+1][z] != ' ') ||
+                                                 (z+1 < boxDepth && field[x][y][z+1] != ' ') ||
+                                                 (x-1 >= 0 && field[x+1][y][z] != ' ') ||
+                                                 (y-1 >= 0 && field[x][y+1][z] != ' ') ||
+                                                 (z-1 >= 0 && field[x][y][z+1] != ' ');
+                        if (adjacentFilled) {
+                            // Additional logic here to confirm it's a dead spot
+                            return true;
+                        }
                     }
                 }
             }
         }
-
-        int smallestBlockVolume = 2;
-    
-        // If the remaining space is not a multiple of the smallest block's volume, return false
-        return remainingSpace % smallestBlockVolume == 0;
+        return false; // No dead spots found
     }
-
+    
+    
+    
     private boolean isBoxFull() {
         for (int x = 0; x < boxWidth; x++) {
             for (int y = 0; y < boxHeight; y++) {
@@ -124,9 +130,7 @@ public class BoxFiller {
         void onBlockUpdated(int x, int y, int z, char blockTypeChar);
     }
 
-
     private void placeBlockInArray(int x, int y, int z, char blockTypeChar, BlockType blockType) {
-        if (!isInBounds(x, y, z)) return; // Check if starting point is within bounds
     
         for (int dx = 0; dx < blockType.width; dx++) {
             for (int dy = 0; dy < blockType.height; dy++) {
@@ -141,7 +145,6 @@ public class BoxFiller {
     }
     
     private void removeBlockFromArray(int x, int y, int z, BlockType blockType) {
-        if (!isInBounds(x, y, z)) return; // Check if starting point is within bounds
     
         for (int dx = 0; dx < blockType.width; dx++) {
             for (int dy = 0; dy < blockType.height; dy++) {
@@ -156,9 +159,6 @@ public class BoxFiller {
         }
     }
     
-    private boolean isInBounds(int x, int y, int z) {
-        return x >= 0 && x < boxWidth && y >= 0 && y < boxHeight && z >= 0 && z < boxDepth;
-    }
     
     private boolean canPlaceBlock(int x, int y, int z, Blocks block) {
         if (block == null) {

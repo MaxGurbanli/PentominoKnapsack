@@ -11,7 +11,6 @@ enum BlockType {
 
     int width, height, depth;
     Color color;
-
     BlockType(int width, int height, int depth, Color color) {
         this.width = width;
         this.height = height;
@@ -31,10 +30,8 @@ public class Blocks extends Box {
     }
 
     public Blocks(int width, int depth, int height, Color color) {
-        
         super(width * BOX_SIZE, height * BOX_SIZE, depth * BOX_SIZE);
         this.setMaterial(new PhongMaterial(color));
-        
     }
 
     // public Blocks[] getOrientations() {
