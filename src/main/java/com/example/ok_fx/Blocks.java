@@ -7,7 +7,7 @@ import javafx.scene.shape.Box;
 import java.util.ArrayList;
 
 enum BlockType {
-    
+
     A(2, 2, 4, Color.RED),
     B(2, 3, 4, Color.GREEN),
     C(3, 3, 3, Color.BLUE),

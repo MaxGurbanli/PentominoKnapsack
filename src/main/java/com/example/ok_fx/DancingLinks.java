@@ -190,6 +190,5 @@ public class DancingLinks {
         start1 = System.currentTimeMillis();
         search(0);
         System.out.println("Sorry, couldn't find a solution! :( ");
-        System.exit(0);
     }
 }

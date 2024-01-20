@@ -1,22 +1,15 @@
 package com.example.cooks;
 
-import javafx.application.Platform;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import static com.example.cooks.Blocks.getOrientationsInBinaryFormat;
 
 public class DLX3D {
-    private static HelloApplication helloApplication;
-
     static int magic_cols = 33;
     static int magic_rows = 8;
     static int magic_depth = 5;
-
-    public static int[][][] result_field;
 
     //Go through the boxes and their rotations
     static int[][][][] AOrientations = getOrientationsInBinaryFormat('A');
@@ -29,20 +22,9 @@ public class DLX3D {
 
     public static HashMap<ArrayList<Integer>, int[]> PentominoToRow = new HashMap<>();
 
-    public static void fillWithMinusOne(int[][][] array) {
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[i].length; j++) {
-                for (int k = 0; k < array[i][j].length; k++) {
-                    array[i][j][k] = -1;
-                }
-            }
-        }
-    }
 
     static int[][] makeSparseMatrix(){
         int[][][] empty3DGrid = new int[magic_cols][magic_rows][magic_depth];
-        fillWithMinusOne(empty3DGrid);
-
 
         ok.add(AOrientations);
         ok.add(BOrientations);
@@ -63,8 +45,8 @@ public class DLX3D {
                             if (isPlacable(empty3DGrid, fullpiece, col, row, zed)){
                                 placeShapeInSpace(empty3DGrid, fullpiece, col, row, zed);
                                 //idk
-                                addRowToRows(empty3DGrid, col,row,zed, ok.indexOf(ori), i);
-                                fillWithMinusOne(empty3DGrid);
+                                addRowToRows(empty3DGrid, col,row,zed, da_chars[ok.indexOf(ori)], ok.indexOf(ori));
+                                empty3DGrid = new int[magic_cols][magic_rows][magic_depth];
                             }
                         }
                     }
@@ -140,18 +122,13 @@ public class DLX3D {
         return true;
     }
 
-    public static void startTheThing() throws InterruptedException {
-        int[][] example = makeSparseMatrix();
-        DancingLinks DLX = new DancingLinks(example);
-        DLX.runSolver();
+    public static void main(String[] args) throws InterruptedException {
+        runExample();
     }
+
     public static void ReturnPentominoesUsed(ArrayList<String> answers) throws InterruptedException{
-        if (result_field != null && result_field[1][1][1] == 1){
-            return;
-        }
         // take the possible answers and turn each of them into readable user form
         int[][][] field = new int[magic_cols][magic_rows][magic_depth];
-        fillWithMinusOne(field);
         for (String curr_answer : answers) {
             curr_answer = curr_answer.stripTrailing();
             String[] splitArray = curr_answer.split(" ");
@@ -188,9 +165,12 @@ public class DLX3D {
                 }
             }
         }
-        result_field = field;
-        System.out.println(Arrays.deepToString(field));
-        System.out.println("Congrats!");
+        
     }
 
+    private static void runExample() throws InterruptedException {
+        int[][] example = makeSparseMatrix();
+        DancingLinks DLX = new DancingLinks(example);
+        DLX.runSolver();
+    }
 }
