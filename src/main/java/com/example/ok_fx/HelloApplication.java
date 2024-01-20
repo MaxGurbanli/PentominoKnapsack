@@ -16,17 +16,17 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 public class HelloApplication extends Application {
-    private static final int WIDTH = 33;
-    private static final int HEIGHT = 5;
-    private static final int DEPTH = 8;
+    public static final int WIDTH = 5;
+    public static final int HEIGHT = 8;
+    public static final int DEPTH = 33;
     private static final double BOX_SIZE = 10;
     private static Group blockGroup;
     private Point2D lastMouseCoordinates;
     // Create the 3D array
-    int[][][] threeDArray = new int[WIDTH][HEIGHT][DEPTH];
+    public static int[][][] threeDArray = new int[WIDTH][HEIGHT][DEPTH];
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws InterruptedException {
         Group root = new Group();
         Group roomGroup = new Group();
         blockGroup = new Group();
@@ -73,8 +73,7 @@ public class HelloApplication extends Application {
 //            Point3D points = Tpoints.get(z);
 //            placeBlockInArray((int) points.getX(), (int) points.getY(), (int) points.getZ(), 'T');
 //        }
-
-        updateVisualsFromField(threeDArray);
+        DLX3D.runExample();
     }
 
     private void setupZooming(Scene scene, Camera camera) {
@@ -210,7 +209,7 @@ public class HelloApplication extends Application {
         }
     }
 
-    private static void updateVisualsFromField(int[][][] given_field) {
+    public static void updateVisualsFromField(int[][][] given_field) {
 
         blockGroup.getChildren().clear();
 
@@ -221,7 +220,19 @@ public class HelloApplication extends Application {
                     if (blockTypeChar == 0){
                         //removeVisualBlock(blockGroup, x, y, z);
                     }else{
-                        BlockType blockType = charToBlockType('L');
+                        BlockType blockType = null;
+                        switch (blockTypeChar){
+                            case 1:
+                                blockType = charToBlockType('A');
+                                break;
+                            case 2:
+                                blockType = charToBlockType('B');
+                                break;
+                            case 3:
+                                blockType = charToBlockType('C');
+                                break;
+                        }
+
                         placeVisualBlock(blockGroup, x, y, z, blockType);
                     }
                 }
@@ -302,7 +313,6 @@ public class HelloApplication extends Application {
             }
         }
     }
-
 
     public static void main(String[] args) {
         launch(args);
