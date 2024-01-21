@@ -16,12 +16,19 @@ public class CargoMaximizer {
     };
     private static final int[] PARCEL_VALUES = {VALUE_A, VALUE_B, VALUE_C};
 
+    private static int[][][] dp;
+    private static char[][][] parcelPositions;
+
     public static void main(String[] args) {
         System.out.println("Maximum value: " + getMaxValue());
+        System.out.println("Storing");
+        storeParcels();
+        printParcelPositions();
     }
 
     private static int getMaxValue() {
-        int[][][] dp = new int[TRUCK_LENGTH + 1][TRUCK_WIDTH + 1][TRUCK_HEIGHT + 1];
+        dp = new int[TRUCK_LENGTH + 1][TRUCK_WIDTH + 1][TRUCK_HEIGHT + 1];
+        parcelPositions = new char[TRUCK_LENGTH + 1][TRUCK_WIDTH + 1][TRUCK_HEIGHT + 1];
 
         for (int i = 0; i <= TRUCK_LENGTH; i++) {
             for (int j = 0; j <= TRUCK_WIDTH; j++) {
@@ -41,4 +48,45 @@ public class CargoMaximizer {
         }
         return dp[TRUCK_LENGTH][TRUCK_WIDTH][TRUCK_HEIGHT];
     }
+
+    private static void storeParcels() {
+        int i = TRUCK_LENGTH, j = TRUCK_WIDTH, k = TRUCK_HEIGHT;
+        while (i > 0 && j > 0 && k > 0) {
+            for (int parcelType = 0; parcelType < PARCEL_DIMENSIONS.length; parcelType++) {
+                int[] dim = PARCEL_DIMENSIONS[parcelType];
+                if (i >= dim[0] && j >= dim[1] && k >= dim[2]) {
+                    int remainingValue = dp[i - dim[0]][j - dim[1]][k - dim[2]];
+                    if (dp[i][j][k] == remainingValue + PARCEL_VALUES[parcelType]) {
+                        // This parcel was placed at this position
+                        for (int x = 0; x < dim[0]; x++) {
+                            for (int y = 0; y < dim[1]; y++) {
+                                for (int z = 0; z < dim[2]; z++) {
+                                    parcelPositions[i - x][j - y][k - z] = (char) ('A' + parcelType);
+                                }
+                            }
+                        }
+                        // Move to the remaining space after placing this parcel
+                        i -= dim[0];
+                        j -= dim[1];
+                        k -= dim[2];
+                        break; // Break the loop as we found the parcel
+                    }
+                }
+            }
+        }
+    }
+
+    private static void printParcelPositions() {
+        for (int i = 1; i <= TRUCK_LENGTH; i++) {
+            for (int j = 1; j <= TRUCK_WIDTH; j++) {
+                for (int k = 1; k <= TRUCK_HEIGHT; k++) {
+                    System.out.print(parcelPositions[i][j][k] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
+    }
+
+
 }
