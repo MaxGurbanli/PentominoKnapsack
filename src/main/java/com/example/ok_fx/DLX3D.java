@@ -135,24 +135,23 @@ public class DLX3D{
     }
     public static boolean isPlacable(int[][][] space, int[][][] shape, int startX, int startY, int startZ) {
         // Iterate over each dimension of the shape
-        for (int x = 0; x < shape.length; x++) { // shape.length should be 2 for X dimension
-            for (int y = 0; y < shape[0].length; y++) { // shape[0].length should be 2 for Y dimension
-                for (int z = 0; z < shape[0][0].length; z++) { // shape[0][0].length should be 4 for Z dimension
-
+        for (int x = 0; x < shape.length; x++) {
+            for (int y = 0; y < shape[x].length; y++) {
+                for (int z = 0; z < shape[x][y].length; z++) {
                     // Check if the current point in the shape is part of the structure (i.e., it's a 1)
                     if (shape[x][y][z] == 1) {
                         // Calculate the corresponding indices in the space
                         int spaceX = startX + x;
                         int spaceY = startY + y;
                         int spaceZ = startZ + z;
-
+    
                         // Check that the indices are within the bounds of the space
                         if (spaceX < 0 || spaceX >= space.length ||
                                 spaceY < 0 || spaceY >= space[0].length ||
                                 spaceZ < 0 || spaceZ >= space[0][0].length) {
                             return false; // Out of bounds
                         }
-
+    
                         // Check if the space is already occupied
                         if (space[spaceX][spaceY][spaceZ] != 0) {
                             return false; // Cannot place as the space is occupied
@@ -162,7 +161,7 @@ public class DLX3D{
             }
         }
         return true; // Shape can be placed
-    }
+    }    
 
     public static void main() throws InterruptedException {
         runExample();
