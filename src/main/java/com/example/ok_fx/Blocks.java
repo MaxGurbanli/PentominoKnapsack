@@ -29,7 +29,7 @@ enum BlockType {
 public class Blocks extends Box {
 
     private static int[][][] testPiece;
-    private static BlockType type;
+    private BlockType type;
     private static final int BOX_SIZE = 10;
 
     public Blocks(BlockType type) {
