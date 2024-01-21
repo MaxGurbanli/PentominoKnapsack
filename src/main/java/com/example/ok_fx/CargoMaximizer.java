@@ -52,6 +52,7 @@ public class CargoMaximizer {
     private static void storeParcels() {
         int i = TRUCK_LENGTH, j = TRUCK_WIDTH, k = TRUCK_HEIGHT;
         while (i > 0 && j > 0 && k > 0) {
+            boolean parcelPlaced = false;
             for (int parcelType = 0; parcelType < PARCEL_DIMENSIONS.length; parcelType++) {
                 int[] dim = PARCEL_DIMENSIONS[parcelType];
                 if (i >= dim[0] && j >= dim[1] && k >= dim[2]) {
@@ -69,9 +70,13 @@ public class CargoMaximizer {
                         i -= dim[0];
                         j -= dim[1];
                         k -= dim[2];
+                        parcelPlaced = true;
                         break; // Break the loop as we found the parcel
                     }
                 }
+            }
+            if (!parcelPlaced) {
+                break; // Break the loop if no parcel could be placed
             }
         }
     }
@@ -87,6 +92,5 @@ public class CargoMaximizer {
             System.out.println();
         }
     }
-
 
 }
