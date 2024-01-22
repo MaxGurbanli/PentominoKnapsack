@@ -1,5 +1,4 @@
-# pentominoes_phase_3
-magdy wrote this
+COPY THE FILES ONE BY ONCE, IT DOENSE TWORK AS A PROJECT
 
 
 ## Getting started
