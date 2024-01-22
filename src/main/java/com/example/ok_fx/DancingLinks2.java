@@ -202,7 +202,7 @@ public class DancingLinks2 {
     public void runSolver() throws InterruptedException {
         answer = new LinkedList<>();
         start1 = System.currentTimeMillis();
-        search(0, 20);
+        search(0, 5);
         System.out.println("Printing best solution with tolerance 10");
         int[][][] sol = DLX3D.getBestSolution();
         Platform.runLater(() -> {

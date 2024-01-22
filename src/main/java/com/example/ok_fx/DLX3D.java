@@ -33,20 +33,20 @@ public class DLX3D{
 
     static int[][] makeSparseMatrix(){
         int[][][] empty3DGrid;
-        ok.add(AOrientations);
-        ok.add(BOrientations);
-        ok.add(COrientations);
-//        ok.add(LOrientations);
-//        ok.add(POrientations);
-//        ok.add(TOrientations);
+//        ok.add(AOrientations);
+//        ok.add(BOrientations);
+//        ok.add(COrientations);
+        ok.add(LOrientations);
+        ok.add(POrientations);
+        ok.add(TOrientations);
 
         char[] da_chars = new char[3];
-        da_chars[0] = 'A';
-        da_chars[1] = 'B';
-        da_chars[2] = 'C';
-//        da_chars[3] = 'L';
-//        da_chars[4] = 'P';
-//        da_chars[5] = 'T';
+//        da_chars[0] = 'A';
+//        da_chars[1] = 'B';
+//        da_chars[2] = 'C';
+        da_chars[0] = 'L';
+        da_chars[1] = 'P';
+        da_chars[2] = 'T';
 
         for (int[][][][] ori : ok){
             for (int i = 0; i < ori.length; i++) {
@@ -278,9 +278,9 @@ public class DLX3D{
 
                     // get the piece with all orientations
                     int[][][][] full_piece_oris;
-                    if (pentoChar == 'A'){
+                    if (pentoChar == 'L'){
                         full_piece_oris = ok.get(0);
-                    } else if (pentoChar == 'B'){
+                    } else if (pentoChar == 'P'){
                         full_piece_oris = ok.get(1);
                     } else {
                         full_piece_oris = ok.get(2);
