@@ -3,7 +3,6 @@ package com.example.demo;
 import javafx.application.Platform;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static com.example.demo.Blocks.getOrientationsInBinaryFormat;
@@ -31,22 +30,41 @@ public class DLX3D{
 
     public static HashMap<ArrayList<Integer>, int[]> PentominoToRow = new HashMap<>();
 
-    static int[][] makeSparseMatrix(){
-        int[][][] empty3DGrid;
-//        ok.add(AOrientations);
-//        ok.add(BOrientations);
-//        ok.add(COrientations);
+    static char[] da_chars = new char[3];
+
+    static boolean abc = false;
+
+    public static void setLPTOrientations(){
+        ok.clear();
         ok.add(LOrientations);
         ok.add(POrientations);
         ok.add(TOrientations);
-
-        char[] da_chars = new char[3];
-//        da_chars[0] = 'A';
-//        da_chars[1] = 'B';
-//        da_chars[2] = 'C';
+        abc = false;
         da_chars[0] = 'L';
         da_chars[1] = 'P';
         da_chars[2] = 'T';
+    }
+
+    public static void setABCOrientations(){
+        ok.clear();
+        ok.add(AOrientations);
+        ok.add(BOrientations);
+        ok.add(COrientations);
+        abc = true;
+        da_chars[0] = 'A';
+        da_chars[1] = 'B';
+        da_chars[2] = 'C';
+    }
+
+    public static void setAOrientations(){
+        ok.clear();
+        ok.add(AOrientations);
+        abc = true;
+        da_chars[0] = 'A';
+    }
+
+    static int[][] makeSparseMatrix(){
+        int[][][] empty3DGrid;
 
         for (int[][][][] ori : ok){
             for (int i = 0; i < ori.length; i++) {
@@ -219,7 +237,6 @@ public class DLX3D{
                     int y = pentominoInfo[2];
                     int z = pentominoInfo[3];
                     int OrienIndex = pentominoInfo[4];
-//                    System.out.println(pentoChar + " at position " + x + " " + y + " " + z + " rotation" + OrienIndex);
 
                     // get the piece with all orientations
                     int[][][][] full_piece_oris;
@@ -240,7 +257,8 @@ public class DLX3D{
             }
         }
         Thread.sleep(500);
-        System.out.println("Done field");
+
+
     }
 
     public static void ReturnPentominoesUsed2(ArrayList<String> answers) throws InterruptedException{
@@ -278,13 +296,24 @@ public class DLX3D{
 
                     // get the piece with all orientations
                     int[][][][] full_piece_oris;
-                    if (pentoChar == 'L'){
-                        full_piece_oris = ok.get(0);
-                    } else if (pentoChar == 'P'){
-                        full_piece_oris = ok.get(1);
+                    if (abc){
+                        if (pentoChar == 'A'){
+                            full_piece_oris = ok.get(0);
+                        } else if (pentoChar == 'B'){
+                            full_piece_oris = ok.get(1);
+                        } else {
+                            full_piece_oris = ok.get(2);
+                        }
                     } else {
-                        full_piece_oris = ok.get(2);
+                        if (pentoChar == 'L'){
+                            full_piece_oris = ok.get(0);
+                        } else if (pentoChar == 'P'){
+                            full_piece_oris = ok.get(1);
+                        } else {
+                            full_piece_oris = ok.get(2);
+                        }
                     }
+
                     int[][][] full_piece = full_piece_oris[OrienIndex];
 
                     if (isPlacable(field, full_piece, x, y ,z)){
@@ -295,7 +324,7 @@ public class DLX3D{
             }
         }
         if (sum > maxValueFound){
-            System.out.println("Found max! Its value: " + sum);
+//            System.out.println("Found max! Its value: " + sum);
             solutionField = copy3DArray(field);
             maxValueFound = sum;
         }
@@ -315,18 +344,35 @@ public class DLX3D{
         return copiedArray;
     }
 
-    static void runExample() throws InterruptedException {
+    static void runExampleABCVal() throws InterruptedException {
+        setABCOrientations();
+        int[][] example = makeSparseMatrix();
+        DancingLinks2 DLX = new DancingLinks2(example);
+        DLX.runSolver();
+    }
 
-                int[][] example = makeSparseMatrix();
-                System.out.println(Arrays.deepToString(example));
-                System.out.println("Headers:" + example[0].length);
-                System.out.println("Possible Rows:" + example.length);
-
-                DancingLinks2 DLX = new DancingLinks2(example);
-                DLX.runSolver();
+    static void runExampleLPTVal() throws InterruptedException {
+        setLPTOrientations();
+        int[][] example = makeSparseMatrix();
+        DancingLinks2 DLX = new DancingLinks2(example);
+        DLX.runSolver();
     }
 
     public static int[][][] getBestSolution() {
         return solutionField;
     }
+
+    public static void runExampleLPT() throws InterruptedException {
+        setLPTOrientations();
+        int[][] example = makeSparseMatrix();
+        DancingLinks DLX = new DancingLinks(example);
+        DLX.runSolver();
+    }
+    public static void runExampleABC() throws InterruptedException {
+        setABCOrientations();
+        int[][] example = makeSparseMatrix();
+        DancingLinks DLX = new DancingLinks(example);
+        DLX.runSolver();
+    }
+
 }

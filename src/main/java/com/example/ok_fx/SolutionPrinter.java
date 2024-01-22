@@ -18,7 +18,7 @@ public interface SolutionPrinter {
 class DefaultPrinter implements SolutionPrinter {
     public void handleSolution(List<DancingLinks.DancingNode> answer, long start1) throws InterruptedException {
         long end1 = System.currentTimeMillis();
-        System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
+//        System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
 
         ArrayList<String> the_answers = new ArrayList<>();
         // Takes each node and gets the column name
@@ -40,7 +40,7 @@ class DefaultPrinter implements SolutionPrinter {
     @Override
     public void handleSolution2(List<DancingLinks2.DancingNode> answer, long start1) throws InterruptedException {
         long end1 = System.currentTimeMillis();
-        System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
+//        System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
 
         ArrayList<String> the_answers = new ArrayList<>();
         // Takes each node and gets the column name
@@ -62,7 +62,7 @@ class DefaultPrinter implements SolutionPrinter {
     @Override
     public void handleCloseToFinish(List<DancingLinks2.DancingNode> answer, long start1) throws InterruptedException {
         long end1 = System.currentTimeMillis();
-        System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
+//        System.out.println("Elapsed Time in milli seconds: " + (end1 - start1));
 
         ArrayList<String> the_answers = new ArrayList<>();
         // Takes each node and gets the column name

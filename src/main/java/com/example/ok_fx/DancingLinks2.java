@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.example.demo.DLX3D.maxValueFound;
+import static com.example.demo.HelloApplication.myText;
+import static com.example.demo.HelloApplication.setMaxValue;
+
 public class DancingLinks2 {
     static long start1;
     private final ColumnNode header;
@@ -103,7 +107,6 @@ public class DancingLinks2 {
     private void search(int k, int tolerance) throws InterruptedException {
         // if we removed all the columns that means we found a solution
         if (System.currentTimeMillis() - start1 > 10000){ //Let it run for 10 seconds
-            System.out.println("Time out!");
             return;
         }
         if (header.Right == header) {
@@ -203,8 +206,10 @@ public class DancingLinks2 {
         answer = new LinkedList<>();
         start1 = System.currentTimeMillis();
         search(0, 5);
-        System.out.println("Printing best solution with tolerance 10");
+//        System.out.println("Printing best solution with tolerance");
         int[][][] sol = DLX3D.getBestSolution();
+        setMaxValue(maxValueFound);
+        myText.setText("Value: " + maxValueFound);
         Platform.runLater(() -> {
             HelloApplication.updateVisualsFromField(sol);
         });

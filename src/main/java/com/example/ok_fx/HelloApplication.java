@@ -10,9 +10,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
 
 public class HelloApplication extends Application {
     public static final int WIDTH = 33;
@@ -20,24 +22,41 @@ public class HelloApplication extends Application {
     public static final int DEPTH = 5;
     private static final double BOX_SIZE = 10;
     private static Group blockGroup;
+    private static int MaxValue = 0;
+    public static Text myText = new Text("MaxValue: Calculating");
+
 
     // Create the 3D array
     private double mouseX;
+
+    public static int getMaxValue() {
+        return MaxValue;
+    }
+
+    public static void setMaxValue(int maxValue) {
+        MaxValue = maxValue;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
         Group roomGroup = new Group();
+        Group roomEmpty = new Group();
         blockGroup = new Group();
-        root.getChildren().addAll(roomGroup, blockGroup);
+        root.getChildren().addAll(roomEmpty, roomGroup, blockGroup);
 
         Scene scene = new Scene(root, 800, 600, true);
         scene.setFill(Color.DARKGRAY);
 
         Camera camera = new PerspectiveCamera();
-        camera.getTransforms().addAll(
+        roomGroup.getTransforms().addAll(
                 new Rotate(-20, Rotate.Y_AXIS),
-                new Rotate(-20, Rotate.X_AXIS),
-                new Translate(-230, -250, 450));
+                new Rotate(20, Rotate.X_AXIS),
+                new Translate(140, 100, -500));
+        blockGroup.getTransforms().addAll(
+                new Rotate(-20, Rotate.Y_AXIS),
+                new Rotate(20, Rotate.X_AXIS),
+                new Translate(140, 100, -500));
 
         scene.setCamera(camera);
         setupZooming(scene, camera);
@@ -48,14 +67,99 @@ public class HelloApplication extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        Thread newThread = new Thread(() -> {
-            try {
-                DLX3D.runExample();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        //Button
+        Button myButton = new Button("Run ABC -> Values");
+        Button myButton2 = new Button("Run LPT -> Values");
+        Button myButton3 = new Button("Run LPT - fillBox");
+        Button myButton4 = new Button("Run ABC - fillBox");
+
+
+        myButton2.getTransforms().addAll(
+                new Translate(0,50,0)
+        );
+        myButton3.getTransforms().addAll(
+                new Translate(0,100,0)
+        );
+        myButton4.getTransforms().addAll(
+                new Translate(0,150,0)
+        );
+        myText.getTransforms().addAll(
+                new Translate(0,250,0)
+        );
+
+        roomEmpty.getChildren().addAll(myButton);
+        roomEmpty.getChildren().addAll(myButton2);
+        roomEmpty.getChildren().addAll(myButton3);
+        roomEmpty.getChildren().addAll(myButton4);
+        roomEmpty.getChildren().addAll(myText);
+
+
+        myButton.setOnMousePressed(event -> {
+            myButton.setDisable(true);
+            myButton2.setDisable(true);
+            myButton3.setDisable(true);
+            myButton4.setDisable(true);
+            Thread newThread = new Thread(() -> {
+                try {
+                    DLX3D.runExampleABCVal();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            newThread.start();
         });
-        newThread.start();
+
+        myButton2.setOnMousePressed(event -> {
+            myButton.setDisable(true);
+            myButton2.setDisable(true);
+            myButton3.setDisable(true);
+            myButton4.setDisable(true);
+
+            Thread newThread = new Thread(() -> {
+                try {
+                    DLX3D.runExampleLPTVal();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            newThread.start();
+        });
+
+        myButton3.setOnMousePressed(event -> {
+            myButton.setDisable(true);
+            myButton2.setDisable(true);
+            myButton3.setDisable(true);
+            myButton4.setDisable(true);
+
+            myText.setText("No Value for this one!");
+            Thread newThread = new Thread(() -> {
+                try {
+                    DLX3D.runExampleLPT();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            newThread.start();
+        });
+
+        myButton4.setOnMousePressed(event -> {
+            myButton.setDisable(true);
+            myButton2.setDisable(true);
+            myButton3.setDisable(true);
+            myButton4.setDisable(true);
+
+            myText.setText("No found solution for this!");
+            Thread newThread = new Thread(() -> {
+                try {
+                    DLX3D.runExampleABC();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            newThread.start();
+        });
+
+
         scene.setOnMousePressed(event -> {
             mouseX = event.getSceneX();
         });
