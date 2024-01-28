@@ -1,7 +1,5 @@
 # Pentomino Knapsack Solver
 
-This project is a Java-based solution for solving the Pentomino Knapsack problem. It utilizes JavaFX for graphical representation and Maven for dependency management.
-
 ## Description
 
 The Pentomino Knapsack problem is a computational challenge that involves fitting pentomino pieces into a defined space efficiently. This project provides an interactive way to visualize and solve this problem using Java.
