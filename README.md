@@ -29,10 +29,10 @@ After running the application, you can interact with the 3D visualization to vie
 
 ## Authors
 
-- Pablo Arranz Garcia
-- Max Gurbanli
-- Magdy Fares
-- Ilya Stetsenko
-- David Henry Francis Wicker
-- Irdi Zeneli
-- Zenios Zeniou
+* [David](https://gitlab.maastrichtuniversity.nl/I6350383)
+* [Ilya](https://gitlab.maastrichtuniversity.nl/I6364930)
+* [Irdi](https://gitlab.maastrichtuniversity.nl/I6350932)
+* [Magdy](https://gitlab.maastrichtuniversity.nl/I6362437)
+* [Max](https://gitlab.maastrichtuniversity.nl/I6342075)
+* [Pablo](https://gitlab.maastrichtuniversity.nl/I6343451)
+* [Zenios](https://gitlab.maastrichtuniversity.nl/I6365033)
