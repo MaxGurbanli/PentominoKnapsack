@@ -1,5 +1,7 @@
 # Pentomino Knapsack Solver
 
+> Group 7, Phase 3
+
 ## Description
 
 The Pentomino Knapsack problem is a computational challenge that involves fitting pentomino pieces into a defined space efficiently. This project provides an interactive way to visualize and solve this problem using Java.
